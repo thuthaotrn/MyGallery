@@ -1,0 +1,118 @@
+<nav class="navbar navbar-light bg-light fixed-top">
+  <div class="d-flex align-items-center me-auto">
+    <button class="navbar-toggler" type="button" (click)="sidebarStateChange()">
+      <i class="bi bi-list fs-1"></i>
+    </button>
+    <a class="navbar-brand d-flex align-items-center" href="#.">
+      <img src="mygallery-logo.png" alt="Logo" class="logo">
+    </a>
+  </div>
+  <div class="input-group mb-3">
+    <input type="text" [(ngModel)]="searchQuery" (input)="onSearch($event)" (keyup.enter)="navigateToSearch()"
+      class="form-control rounded-start-pill border-end-0" placeholder="Search" />
+    <button *ngIf="searchQuery" class="btn clear-btn" (click)="clearSearch()" data-bs-toggle="tooltip" title="Clear">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+        class="size-6">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+      </svg>
+    </button>
+
+    <button class="search-btn btn" (click)="navigateToSearch()" data-bs-toggle="tooltip" title="Search">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+        class="size-6">
+        <path stroke-linecap="round" stroke-linejoin="round"
+          d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+      </svg>
+    </button>
+  </div>
+  <button class="add btn rounded-pill" type="button" data-bs-toggle="modal" data-bs-target="#addVideoModal">
+    <i class="bi bi-plus-lg"></i>
+    Add new video
+  </button>
+  <div>
+    <div *ngIf="!isLoggedIn; else welcomeTemplate">
+      <button mat-raised-button color="primary" (click)="openLoginModal()" class="btn">Login</button>
+    </div>
+    <ng-template #welcomeTemplate>
+      <button mat-button [matMenuTriggerFor]="userMenu">
+        Welcome, {{username}}!
+      </button>
+      <mat-menu #userMenu="matMenu">
+        <button mat-menu-item (click)="logout()">Log out</button>
+      </mat-menu>
+    </ng-template>
+  </div>
+</nav>
+<div class="modal fade" id="addVideoModal" tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalTitle">Add new video</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" data-bs-toggle="tooltip"
+          title="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="addVideoForm" (ngSubmit)="saveVideo()">
+          <div class="row d-flex justify-content-between">
+            <div class="col-md-4 col-12">
+              <label for="thumbnail">Thumbnail:
+                <div class="thumbnail-upload">
+                  <div class="preview d-flex flex-column justify-content-center align-items-center">
+                    <img *ngIf="thumbnailPreview" [src]="thumbnailPreview" class="mt-2 img-thumbnail" width="150" />
+                    <button type="button" class="btn" (click)="onFileChange($event)"><i
+                        class="bi bi-arrow-bar-up"></i>Upload image</button>
+                  </div>
+                </div>
+              </label>
+              <input type="file" id="thumbnail" class="d-none" (change)="onFileChange($event)" accept="image/*">
+              <div class="divider">
+                <span>Or</span>
+              </div>
+              <div class="mb-3">
+                <label for="thumbnail" class="form-label">URL:</label>
+                <input type="text" id="thumbnail" class="form-control" formControlName="thumbnail"
+                  (input)="onThumbnailUrlChange($event)" placeholder="Enter thumbnail url">
+              </div>
+            </div>
+            <div class="col-8">
+              <div class="mb-3">
+                <label for="title" class="form-label">Title</label>
+                <input type="text" id="title" class="form-control" formControlName="title"
+                  placeholder="Enter video title" />
+                <div *ngIf="addVideoForm.controls.title.invalid&&addVideoForm.controls.title.touched"
+                  class="text-danger">
+                  Title is required.
+                </div>
+              </div>
+              <div class="mb-3">
+                <label for="url" class="form-label">Video url:</label>
+                <input type="text" id="url" class="form-control" formControlName="url" placeholder="Enter video URL">
+                <div *ngIf="addVideoForm.controls.url.invalid && addVideoForm.controls.url.touched" class="text-danger">
+                  Enter a valid video URL (https://...).
+                </div>
+              </div>
+              <div class="mb-3">
+                <label for="tags" class="form-label">Tags</label>
+                <input type="text" id="tags" class="form-control" #tagInput (keyup.enter)="addTag(tagInput)"
+                  placeholder="Enter a tag and press Enter">
+              </div>
+
+              <div class="tag-container">
+                <span class="tag" *ngFor="let tag of tags.controls; let i = index">
+                  {{ tag.value }}
+                  <button type="button" class="btn-close" (click)="removeTag(i)" data-bs-toggle="tooltip"
+                    title="Remove tag">x</button>
+                </span>
+              </div>
+            </div>
+            <button type="button" (click)="saveVideo();resetForm()" class="btn btn-primary mt-3"
+              [disabled]="addVideoForm.invalid">Save Video</button>
+          </div>
+        </form>
+      </div>
+      <div *ngIf="showAlert" class="alert" [ngClass]="alertClass" role="alert">
+        {{ alertMessage }}
+      </div>
+    </div>
+  </div>
+</div>

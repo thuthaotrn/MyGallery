@@ -1,0 +1,41 @@
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-md-12">
+      <h2 class="mb-4">Liked Videos</h2>
+    </div>
+
+    <div class="col-md-12">
+      <div class="list-group">
+        <div *ngFor="let video of paginatedVideos" class="list-group-item list-group-item-action d-flex">
+          <a [href]="video.url" target="_blank" class="video-thumbnail-wrapper">
+            <img [src]="video.thumbnail" alt="{{ video.title }}" class="video-thumbnail">
+          </a>
+
+          <div class="video-info">
+            <a [href]="video.url" target="_blank" class="video-title">{{ video.title }}</a>
+            <p class="video-tags">
+              <ng-container *ngFor="let tag of video.tags; let i = index">
+                <a [routerLink]="['/tag', tag]" class="tag-link">{{ tag }}</a>
+                <span *ngIf="i < video.tags.length - 1"> • </span>
+              </ng-container>
+            </p>
+            <div class="button">
+              <button class="like btn" (click)="likeVideo(video)" data-bs-toggle="tooltip" title="Like video">
+                <i [ngClass]="{ 'bi bi-heart-fill text-danger': isLiked(video), 'bi bi-heart': !isLiked(video) }"></i>
+              </button>
+
+              <button class="delete-btn btn" (click)="deleteVideo(video)" data-bs-toggle="tooltip" title="Delete video">
+                <i class="bi bi-trash3"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="pagination">
+  <button (click)="prevPage()" [disabled]="currentPage===1">Previous</button>
+  <span>{{currentPage}} / {{totalPages}}</span>
+  <button (click)="nextPage()" [disabled]="currentPage===totalPages">Next</button>
+</div>

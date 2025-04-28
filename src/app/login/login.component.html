@@ -1,0 +1,19 @@
+<div class="login-modal" *ngIf="isLoginModalOpen">
+    <div class="login-box">
+        <h2>Login</h2>
+        <form (submit)="login()">
+            <div class="username mt-3">
+                <label for="username" class="mb-2">Username:</label>
+                <input type="text" class="form-control mb-3" [(ngModel)]="username" id="username" placeholder="Enter username" name="username" required>
+            </div>
+            <div class="password">
+                <label for="password" class="mb-2">Password:</label>
+                <input type="password" class="form-control" [(ngModel)]="password" id="password" placeholder="Enter password" name="password" required>
+            </div>
+            <div *ngIf="errorMessage" class="error-message">
+                {{ errorMessage }}
+              </div>
+            <button type="submit" class="btn btn-primary mt-3">Log in</button>
+        </form>
+    </div>
+</div>

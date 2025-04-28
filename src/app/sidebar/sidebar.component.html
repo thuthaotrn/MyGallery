@@ -1,0 +1,18 @@
+<nav class="sidebar">
+  <ul>
+    <li *ngFor="let item of menuItems" (click)="navigate(item.link)">
+      {{ item.label }}
+    </li>
+    <li>Popular Tags
+      <div class="tag-container">
+        <div *ngFor="let tagName of tags" class="tag">
+          <a [routerLink]="['/tag', tagName.tag]">
+            {{ tagName.tag }} ({{ tagName.numberOfVideos }})
+          </a>
+        </div>
+      </div>
+    </li>
+  </ul>
+
+
+</nav>

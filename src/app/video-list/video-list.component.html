@@ -1,0 +1,60 @@
+<div class="filterbar">
+  <div class="tabs">
+    <span *ngFor="let tab of filterTabs" [class.active]="tab === activeTab" (click)="onTabChange(tab)">
+      {{ tab }}
+    </span>
+  </div>
+
+  <div class="dropdown">
+    <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown">
+      <i class="bi bi-funnel me-2"></i>Filters
+    </button>
+    <ul class="dropdown-menu">
+      <li>
+        <h5 class="dropdown-header">Sort</h5>
+      </li>
+      <li><span class="dropdown-item" (click)="onSortChange('Title')">Title</span></li>
+      <li><span class="dropdown-item" (click)="onSortChange('Newest')">Newest</span></li>
+      <li><span class="dropdown-item" (click)="onSortChange('Oldest')">Oldest</span></li>
+    </ul>
+  </div>
+</div>
+
+<div class="video-grid">
+  <div class="video-card" *ngFor="let video of paginatedVideos">
+    <a [href]="video.url" target="_blank" class="video-link" (click)="watchVideo(video)">
+      <div class="thumbnail">
+        <img [src]="video.thumbnail" [alt]="video.title" />
+      </div>
+      <div class="video-info">
+        <h3 class="video-title">{{ video.title }}</h3>
+        <p class="video-tags">
+          <ng-container *ngFor="let tag of video.tags; let i = index">
+            <a [routerLink]="['/tag', tag]" class="tag-link">{{ tag }}</a>
+            <span *ngIf="i < video.tags.length - 1"> • </span>
+          </ng-container>
+        </p>
+      </div>
+    </a>
+    <div class="btn-container">
+      <!--
+      <button class="like btn justify-content-center" data-bs-toggle="tooltip" title="Like video" (click)="likeVideo(video)">
+        <i [ngClass]="video | likedClass:username"></i>
+      </button>
+    -->
+    <button class="like btn justify-content-center" data-bs-toggle="tooltip" title="Like video" (click)="likeVideo(video)">
+      <i [ngClass]="{'bi bi-heart':!video.isLiked,'bi bi-heart-fill text-danger':video.isLiked}"></i>
+    </button>
+      <button class="delete-btn btn justify-content-center" data-bs-toggle="tooltip" title="Delete video" (click)="toggleDelete(video)">
+        <i class="bi bi-trash3"></i>
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<div class="pagination">
+  <button (click)="prevPage()" [disabled]="currentPage === 1">Previous</button>
+  <span>Page {{ currentPage }} / {{ totalPages }}</span>
+  <button (click)="nextPage()" [disabled]="currentPage === totalPages">Next</button>
+</div>
